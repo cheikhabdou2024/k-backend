@@ -77,7 +77,7 @@ const login = async (req, res) => {
     }
 
     // 1. Find user by email
-    const user = await User.findOne({ where: { email: req.body.email } });
+    const user = await User.scope('withPassword').findOne({ where: { email: req.body.email } });
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
