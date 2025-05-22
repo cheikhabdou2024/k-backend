@@ -7,6 +7,8 @@ const commentController = require('../controllers/commentController');
 const authMiddleware = require('../middleware/auth');
 const { standardLimiter, userLimiter } = require('../middleware/rateLimiter');
 const { createVideoValidation, updateVideoValidation } = require('../validations/video');
+const { body } = require('express-validator');
+
 
 // Apply rate limiter to all video routes
 router.use(standardLimiter);
@@ -26,6 +28,25 @@ router.get('/trending', videoController.getTrendingVideos);
  * GET /api/videos/:id - Get a single video by ID
  */
 router.get('/:id', videoController.getVideoById);
+
+// Comment validation middleware
+const commentValidation = [
+  body('content')
+    .trim()
+    .notEmpty().withMessage('Comment content is required')
+    .isLength({ max: 500 }).withMessage('Comment cannot exceed 500 characters')
+];
+
+// PUBLIC COMMENT ROUTES (no auth required for viewing)
+/**
+ * GET /api/videos/:videoId/comments - Get comments for a video
+ */
+router.get('/:videoId/comments', commentController.getVideoComments);
+
+/**
+ * GET /api/videos/:videoId/comments/count - Get comment count for a video
+ */
+router.get('/:videoId/comments/count', commentController.getCommentCount);
 
 // Protected routes - require authentication
 router.use(authMiddleware);

@@ -139,7 +139,39 @@ const login = async (req, res) => {
   }
 };
 
+const getMe = async (req, res) => {
+  try {
+    // Vérifier si l'utilisateur est authentifié (req.userId devrait être défini par votre middleware d'authentification)
+    if (!req.userId) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Récupérer l'utilisateur depuis la base de données
+    const user = await User.findByPk(req.userId, {
+      attributes: { exclude: ['password'] } // Exclure le mot de passe de la réponse
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Renvoyer les informations de l'utilisateur
+    res.status(200).json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+      // Ajoutez d'autres champs si nécessaire
+    });
+  } catch (error) {
+    console.error('Error in getMe:', error);
+    res.status(500).json({ error: 'Failed to fetch user data' });
+  }
+};
+
 module.exports = {
   register,
-  login
+  login,
+  getMe // N'oubliez pas d'exporter la nouvelle méthode
 };
