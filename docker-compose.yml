@@ -56,11 +56,11 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: minio123
     ports:
-      - "9001:9001"  # API
-      - "9000:9000"  # Console
+      - "9000:9000"  # API
+      - "9001:9001"  # Console
     volumes:
       - minio_data:/data
-    command: server /data --console-address ":9000"
+    command: server /data --console-address ":9001"
     restart: unless-stopped
 
   # Définir votre backend Node.js avec Sequelize
