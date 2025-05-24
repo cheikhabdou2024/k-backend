@@ -6,6 +6,9 @@ const app = express();
 const { sequelize } = require('./models');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 const { standardLimiter, authLimiter } = require('./middleware/rateLimiter');
+const uploadRoutes = require('./routes/upload');
+
+
 
 // ======================
 // 1. Middleware Setup
@@ -41,6 +44,8 @@ app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/comments', commentRoutes);
+
+app.use('/api/upload', uploadRoutes);
 
 // ======================
 // 4. Health Check
